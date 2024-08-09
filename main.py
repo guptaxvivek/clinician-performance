@@ -16,7 +16,6 @@ def preprocess_data(cases_df, rotas_df):
     merged_df = pd.merge(cases_df, rotas_df, left_on=["rslid", "cons_username"], right_on=["rslid", "adastra"]).drop_duplicates()
     return merged_df
 
-
 def calculate_clinician_performance(merged_df):
 
     clinician_performance = (
@@ -169,8 +168,6 @@ def plot_cases_per_shift(merged_df):
     st.plotly_chart(perc_timefig, use_container_width=True)
 
 
-
-
 def display_clinician_scoreboard(merged_df):
     rating_criteria = {
         'Extremely Satisfied': 5,
@@ -203,9 +200,9 @@ def ensure_duration_format(duration_str):
     return duration_str
 
 def plot_daily_hours_cost(data):
-    data['duration_y'] = data['duration_y'].apply(ensure_duration_format)
+    data['duration'] = data['duration'].apply(ensure_duration_format)
     data['date'] = pd.to_datetime(data['date'], errors='coerce')
-    data['duration_hours'] = pd.to_timedelta(data['duration_y'], errors='coerce').dt.total_seconds() / 3600
+    data['duration_hours'] = pd.to_timedelta(data['duration'], errors='coerce').dt.total_seconds() / 3600
 
     grouped_data = data.groupby(['date', 'role'], as_index=False).agg(
         total_hours=('duration_hours', 'sum'),
@@ -246,7 +243,7 @@ def main():
 
     cases_df, rotas_df = load_data()
     merged_df = preprocess_data(cases_df, rotas_df)
-    del cases_df, rotas_df
+    del cases_df
 
     role_headers = merged_df['role'].unique().tolist()
     role_headers.insert(0, '(All)')
@@ -263,7 +260,7 @@ def main():
     filtered_df = role_df[role_df['adastra'] == selected_adastra]
 
     display_clinician_scoreboard(role_df)
-    plot_daily_hours_cost(role_df)
+    plot_daily_hours_cost(rotas_df)
     plot_avg_case_type(role_df)
 
     if not filtered_df.empty:
