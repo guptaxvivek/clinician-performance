@@ -243,7 +243,6 @@ def plot_avg_case_type(df):
     st.plotly_chart(fig)
 
 def main():
-    # st.set_page_config(layout="wide", page_title="Clinician Performance Dashboard")
     st.title('Clinician Performance Dashboard')
 
     cases_df, rotas_df = load_data()
@@ -267,7 +266,7 @@ def main():
         role_df = role_df[role_df['cons_type'] == selected_case]
 
     adastra_headers = role_df['adastra'].unique()
-    selected_adastra = st.sidebar.selectbox('Select Clinician', adastra_headers)
+    selected_adastra = st.sidebar.selectbox('Select Clinician', sorted(adastra_headers))
 
     filtered_df = role_df[role_df['adastra'] == selected_adastra]
 
@@ -280,7 +279,7 @@ def main():
         plot_cases_per_shift(filtered_df)
         plot_clinician_value_per_case_over_time(selected_adastra, filtered_df)
         get_patients_feedback(filtered_df)
-            
+        
     else:
         st.write('No data available for the selected Adastra header.')
 
@@ -351,7 +350,6 @@ if __name__ == "__main__":
         st.Page(nothing7, title="Support Desk"),
         st.Page(nothing8, title="Messages"),
         st.Page(nothing9, title="My Profile"),
-
         ]
     
     pg = st.navigation(pages)
