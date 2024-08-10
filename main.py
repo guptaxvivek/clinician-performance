@@ -107,11 +107,14 @@ def plot_cases_per_shift(merged_df):
         margin=dict(t=50, b=50, l=50, r=50)
     )
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4, c5 = st.columns([1,1,1,1,2])
 
     c1.metric("Average Cases per Shift", f"{avg_case_shift.mean():.2f}")
     c2.metric("Total Cases", merged_df.shape[0])
     c3.metric("Total Shifts", avg_case_shift.count())
+    c4.metric("Shift Cancellations", 3)
+    c5.metric("Late Attendances", " 2 ( -39 minutes )")
+
     shiftcat = merged_df['shiftcategory'].value_counts().reset_index()
     pie_fig = px.pie(shiftcat, values='count', names='shiftcategory', 
                     title='Shift Distribution',
@@ -167,6 +170,9 @@ def plot_cases_per_shift(merged_df):
     st.plotly_chart(cons_fig, use_container_width=True)
     st.plotly_chart(perc_timefig, use_container_width=True)
 
+
+def get_patients_feedback(df):
+    st.dataframe(df[['rslid','patient_satisfaction','patient_comments']].dropna().reset_index(drop=True), use_container_width=True)
 
 def display_clinician_scoreboard(merged_df):
     rating_criteria = {
@@ -237,8 +243,7 @@ def plot_avg_case_type(df):
     st.plotly_chart(fig)
 
 def main():
-    st.logo("BARDOC-Transparent-LOGO-350-x-100.webp")
-    st.set_page_config(layout="wide", page_title="Clinician Performance Dashboard")
+    # st.set_page_config(layout="wide", page_title="Clinician Performance Dashboard")
     st.title('Clinician Performance Dashboard')
 
     cases_df, rotas_df = load_data()
@@ -254,6 +259,13 @@ def main():
         role_df = merged_df
     
     del merged_df
+    case_types = role_df['cons_type'].unique().tolist()
+    case_types.insert(0, '(All)')
+    selected_case = st.sidebar.selectbox('Select Case Type', case_types)
+
+    if selected_case != "(All)":
+        role_df = role_df[role_df['cons_type'] == selected_case]
+
     adastra_headers = role_df['adastra'].unique()
     selected_adastra = st.sidebar.selectbox('Select Clinician', adastra_headers)
 
@@ -267,9 +279,80 @@ def main():
         st.subheader(f'Performance for : {selected_adastra}')
         plot_cases_per_shift(filtered_df)
         plot_clinician_value_per_case_over_time(selected_adastra, filtered_df)
+        get_patients_feedback(filtered_df)
             
     else:
         st.write('No data available for the selected Adastra header.')
 
+def nothing1():
+    pass
+
+def nothing2():
+    pass
+
+def nothing3():
+    pass
+
+def nothing4():
+    pass
+
+def nothing5():
+    pass
+
+def nothing6():
+    pass
+
+def nothing7():
+    pass
+
+def nothing8():
+    pass
+
+def nothing9():
+    pass
+
+def onboard():
+    import streamlit as st
+    import datetime as dt
+
+    st.title("Welcome Paul Sweeting")
+
+    st.header(f"The Time Is {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}")
+
+    with st.container(border=True):
+        st.write("### Alerts:")
+        st.write("- **09:12AM** - NWAS are having issues with connecting calls to CAS")
+        st.write("- **09:22AM** - EHR needs you to reauthenticate before shift starts")
+
+    st.selectbox("Choose Role", ["Despatcher", "Call Handler", "Shift Lead"])
+
+    if st.toggle("Slide to clock in"):
+        with st.container(border=True):
+            st.subheader("Task Due")
+            st.write("✅ Due: Sign Off handover from Clare Tooney")
+            st.write("✅ Due: Delta Car Laptop Connectivity")
+            st.write("✅ 11am: Check Room 246 Medicines Fridge")
+            st.write("✅ 12pm: NWAS Opal Call ")
+            st.write("✅ 13:00pm: Water Meeting Reception Handover")
+
+
 if __name__ == "__main__":
-    main()
+    # st.sidebar.title("My Sidebar Title")
+    st.logo("BARDOC-Transparent-LOGO-350-x-100.webp")
+    pages=[   
+        st.Page(main, title="Clinician Performance Dashboard"),
+        st.Page(onboard, title="Onboard/Offboard"),
+        st.Page(nothing1, title="My Task List"),
+        st.Page(nothing2, title="My Shifts"),
+        st.Page(nothing3, title="Request Annual Leave"),
+        st.Page(nothing4, title="Request Available Shift"),
+        st.Page(nothing5, title="Performance"),
+        st.Page(nothing6, title="Education Centre"),
+        st.Page(nothing7, title="Support Desk"),
+        st.Page(nothing8, title="Messages"),
+        st.Page(nothing9, title="My Profile"),
+
+        ]
+    
+    pg = st.navigation(pages)
+    pg.run()
