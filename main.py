@@ -330,10 +330,10 @@ def onboard():
         with st.container(border=True):
             st.subheader("Task Due")
             st.write("✅ Due: Sign Off handover from Clare Tooney")
-            st.write("✅ Due: Delta Car Laptop Connectivity")
-            st.write("✅ 11am: Check Room 246 Medicines Fridge")
-            st.write("✅ 12pm: NWAS Opal Call ")
-            st.write("✅ 13:00pm: Water Meeting Reception Handover")
+            st.write("⏹️ Due: Delta Car Laptop Connectivity")
+            st.write("⏹️ 11am: Check Room 246 Medicines Fridge")
+            st.write("⏹️ 12pm: NWAS Opal Call ")
+            st.write("⏹️ 13:00pm: Water Meeting Reception Handover")
 
 
 if __name__ == "__main__":
